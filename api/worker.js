@@ -15,24 +15,30 @@ export default async function fetch(request) {
     console.log("Проксирование на URL:", proxiedUrl);
 
     try {
-      // Проксирование запроса
+      // Создаем новый объект заголовков и фильтруем его
+      const newHeaders = new Headers(request.headers);
+      newHeaders.delete('host'); // Самое важное!
+      newHeaders.delete('x-forwarded-for');
+      newHeaders.delete('x-forwarded-proto');
+      newHeaders.delete('x-real-ip');
+      newHeaders.delete('connection');
+
+      // Проксирование запроса с отфильтрованными заголовками
       const proxiedRequest = new Request(proxiedUrl, {
         method: request.method,
-        headers: request.headers,
+        headers: newHeaders,
         body: request.method !== "GET" && request.method !== "HEAD" ? request.body : null,
+        redirect: 'follow',
       });
       
-      console.log("делаем запрос", proxiedRequest);
+      console.log("Делаем запрос на:", proxiedUrl);
+      
       // Выполнение запроса к внешнему API
       const response = await fetch(proxiedRequest);
       console.log("Получен ответ от целевого сервера. Статус: ", response.status);
 
       // Возврат ответа клиенту
-      return new Response(response.body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers,
-      });
+      return response; // Можно просто вернуть response, он уже содержит все необходимое
     } catch (error) {
       // Обработка ошибок
       console.log("КРИТИЧЕСКАЯ ОШИБКА:", error);

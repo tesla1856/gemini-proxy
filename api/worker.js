@@ -2,8 +2,7 @@ export const config = {
   runtime: 'edge',
 };
 
-export default {
-  async fetch(request) {
+export default async function fetch(request) {
     console.log("req=", request);
     // URL внешнего сервера
     const externalUrl = "https://generativelanguage.googleapis.com";
@@ -41,5 +40,4 @@ export default {
         headers: { "Content-Type": "application/json" },
       });
     }
-  },
-};
+  };

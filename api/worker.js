@@ -3,7 +3,6 @@ export const config = {
 };
 
 export default async function fetch(request) {
-    console.log("req=", request);
     // URL внешнего сервера
     const externalUrl = "https://generativelanguage.googleapis.com";
 
@@ -11,8 +10,7 @@ export default async function fetch(request) {
     const url = new URL(request.url);
     const proxiedUrl = externalUrl + url.pathname + url.search;
 
-    console.log("Оригинальный путь: ", url.pathname);
-    console.log("Проксирование на URL:", proxiedUrl);
+    console.log(`Проксирование: ${request.method} ${url.pathname} -> ${proxiedUrl}`);
 
     try {
       // Создаем новый объект заголовков и фильтруем его
@@ -31,17 +29,16 @@ export default async function fetch(request) {
         redirect: 'follow',
       });
       
-      console.log("Делаем запрос на:", proxiedUrl);
-      
       // Выполнение запроса к внешнему API
       const response = await fetch(proxiedRequest);
-      console.log("Получен ответ от целевого сервера. Статус: ", response.status);
+      console.log(`Ответ от ${proxiedUrl}: ${response.status}`);
 
       // Возврат ответа клиенту
-      return response; // Можно просто вернуть response, он уже содержит все необходимое
+      return response;
+
     } catch (error) {
       // Обработка ошибок
-      console.log("КРИТИЧЕСКАЯ ОШИБКА:", error);
+      console.error("КРИТИЧЕСКАЯ ОШИБКА:", error.message, error.stack);
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
         headers: { "Content-Type": "application/json" },

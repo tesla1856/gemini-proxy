@@ -11,8 +11,8 @@ export default {
     const url = new URL(request.url);
     const proxiedUrl = externalUrl + url.pathname + url.search;
 
-    console.log(Оригинальный путь: ${url.pathname});
-    console.log(Проксирование на URL: ${proxiedUrl});
+    console.log("Оригинальный путь: ${url.pathname}");
+    console.log("Проксирование на URL: ${proxiedUrl}");
 
     try {
       // Проксирование запроса
@@ -24,7 +24,7 @@ export default {
 
       // Выполнение запроса к внешнему API
       const response = await fetch(proxiedRequest);
-      console.log(Получен ответ от целевого сервера. Статус: ${response.status});
+      console.log("Получен ответ от целевого сервера. Статус: ${response.status}");
 
       // Возврат ответа клиенту
       return new Response(response.body, {

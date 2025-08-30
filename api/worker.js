@@ -4,6 +4,7 @@ export const config = {
 
 export default {
   async fetch(request) {
+    console.log("req=", request);
     // URL внешнего сервера
     const externalUrl = "https://generativelanguage.googleapis.com";
 

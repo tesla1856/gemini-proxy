@@ -11,6 +11,9 @@ export default {
     const url = new URL(request.url);
     const proxiedUrl = externalUrl + url.pathname + url.search;
 
+    console.log(Оригинальный путь: ${url.pathname});
+    console.log(Проксирование на URL: ${proxiedUrl});
+
     try {
       // Проксирование запроса
       const proxiedRequest = new Request(proxiedUrl, {
@@ -21,6 +24,7 @@ export default {
 
       // Выполнение запроса к внешнему API
       const response = await fetch(proxiedRequest);
+      console.log(Получен ответ от целевого сервера. Статус: ${response.status});
 
       // Возврат ответа клиенту
       return new Response(response.body, {
@@ -30,6 +34,7 @@ export default {
       });
     } catch (error) {
       // Обработка ошибок
+      console.error("КРИТИЧЕСКАЯ ОШИБКА:", error);
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
